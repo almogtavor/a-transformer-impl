@@ -9,15 +9,20 @@ from src.positional_encoding import PositionalEncoding
 
 
 class CausalTransformer(nn.Module):
-    def __init__(self, src_vocab_size, tgt_vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout):
+    def __init__(self, src_vocab_size, tgt_vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout, use_lora=False):
         super(CausalTransformer, self).__init__()
         self.encoder_embedding = nn.Embedding(src_vocab_size, d_model)
         self.decoder_embedding = nn.Embedding(tgt_vocab_size, d_model)
         self.positional_encoding = PositionalEncoding(d_model, max_seq_length)
 
-        self.encoder_layers = nn.ModuleList([EncoderLayer(d_model, num_heads, d_ff, dropout) for _ in range(num_layers)])
-        self.decoder_layers = nn.ModuleList([DecoderLayer(d_model, num_heads, d_ff, dropout) for _ in range(num_layers)])
-
+        self.encoder_layers = nn.ModuleList([
+            EncoderLayer(d_model, num_heads, d_ff, dropout, use_lora=use_lora)
+            for _ in range(num_layers)
+        ])
+        self.decoder_layers = nn.ModuleList([
+            DecoderLayer(d_model, num_heads, d_ff, dropout, use_lora=use_lora)
+            for _ in range(num_layers)
+        ])
         self.fc = nn.Linear(d_model, tgt_vocab_size)
         self.dropout = nn.Dropout(dropout)
 

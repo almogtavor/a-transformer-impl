@@ -4,6 +4,8 @@ import torch.optim as optim
 import torch.utils.data as data
 import math
 
+from src.lora.lora_linear import LoRALinear
+
 torch.manual_seed(33)
 
 my_dim = 20
@@ -20,7 +22,7 @@ print(output.size())
 # typical MHA tensor have the shape of [batch_size, num_heads, seq_len, head_dim]
 # so we'll take K.transpose(-2,-1) (equivalent to K.transpose(2,3), i.e. seq_len, head_dim)
 class MultiHeadAttention(nn.Module):
-    def __init__(self, d_model, num_heads):
+    def __init__(self, d_model, num_heads, use_lora=False):
         super(MultiHeadAttention, self).__init__()
         assert d_model % num_heads == 0, "error"
 
@@ -31,7 +33,8 @@ class MultiHeadAttention(nn.Module):
         self.W_q = nn.Parameter(torch.Tensor(num_heads, d_model, self.d_k))
         self.W_k = nn.Parameter(torch.Tensor(num_heads, d_model, self.d_k))
         self.W_v = nn.Parameter(torch.Tensor(num_heads, d_model, self.d_k))
-        self.W_o = nn.Linear(d_model, d_model)
+        LinearClass = LoRALinear if use_lora else nn.Linear
+        self.W_o = LinearClass(d_model, d_model)
 
         self.init_weights()
 

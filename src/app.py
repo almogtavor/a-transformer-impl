@@ -1,3 +1,5 @@
+import os
+from datetime import datetime
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -19,6 +21,26 @@ print(output.size())
 
 
 def train():
+    # === Logging Setup ===
+    os.makedirs("training_results", exist_ok=True)
+    count_file = "training_results/training_log.txt"
+
+    # Get and update training number
+    if os.path.exists(count_file):
+        with open(count_file, "r") as f:
+            count = int(f.read().strip())
+    else:
+        count = 0
+
+    count += 1
+    with open(count_file, "w") as f:
+        f.write(str(count))
+
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    log_filename = f"training_results/{timestamp}_train{count}.txt"
+
+    log_lines = [f"This is training number {count}\n"]
+
     src_vocab_size = 5000
     tgt_vocab_size = 5000
     d_model = 512
@@ -29,7 +51,7 @@ def train():
     dropout = 0.1
 
     transformer = CausalTransformer(src_vocab_size, tgt_vocab_size, d_model, num_heads, num_layers, d_ff,
-                                    max_seq_length, dropout)
+                                    max_seq_length, dropout, use_lora=True)
 
     # Generate random sample data
     src_data = torch.randint(1, src_vocab_size, (64, max_seq_length))  # (batch_size, seq_length)
@@ -45,7 +67,12 @@ def train():
         loss = criterion(output.contiguous().view(-1, tgt_vocab_size), tgt_data[:, 1:].contiguous().view(-1))
         loss.backward()
         optimizer.step()
-        print(f"Epoch: {epoch + 1}, Loss: {loss.item()}")
+        log_line = f"Epoch: {epoch + 1}, Loss: {loss.item():.4f}"
+        print(log_line)
+        log_lines.append(log_line + "\n")
+    # Write all logs to file
+    with open(log_filename, "w") as f:
+        f.writelines(log_lines)
 
 if __name__ == '__main__':
     train()

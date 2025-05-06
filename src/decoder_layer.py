@@ -4,10 +4,10 @@ from src.position_wise_feed_forward_nn import PositionWiseFeedForward
 
 
 class DecoderLayer(nn.Module):
-    def __init__(self, d_model, num_heads, d_ff, dropout_rate):
+    def __init__(self, d_model, num_heads, d_ff, dropout_rate, use_lora=False):
         super(DecoderLayer, self).__init__()
-        self.self_attn = MultiHeadAttention(d_model, num_heads)
-        self.cross_attn = MultiHeadAttention(d_model, num_heads)
+        self.self_attn = MultiHeadAttention(d_model, num_heads, use_lora=use_lora)
+        self.cross_attn = MultiHeadAttention(d_model, num_heads, use_lora=use_lora)
         self.feed_forward = PositionWiseFeedForward(d_model, d_ff)
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
