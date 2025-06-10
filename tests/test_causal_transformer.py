@@ -1,11 +1,11 @@
-import torch
 import pytest
+import torch
 import torch.nn as nn
 
-from src.casual_transformer import CausalTransformer
-from src.decoder_layer import DecoderLayer
-from src.encoder_layer import EncoderLayer
-from src.positional_encoding import PositionalEncoding
+from casual_transformer.casual_transformer import CausalTransformer
+from casual_transformer.decoder_layer import DecoderLayer
+from casual_transformer.encoder_layer import EncoderLayer
+from casual_transformer.positional_encoding import PositionalEncoding
 
 
 # Test Case 1: Verify model initialization
@@ -21,12 +21,14 @@ def test_causal_transformer_initialization():
     dropout = 0.1
 
     # Initialize the model
-    model = CausalTransformer(src_vocab_size, tgt_vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout)
+    model = CausalTransformer(src_vocab_size, tgt_vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length,
+                              dropout)
 
     # Check that the model's components are initialized correctly
     assert isinstance(model.encoder_embedding, nn.Embedding)
     assert isinstance(model.decoder_embedding, nn.Embedding)
-    assert isinstance(model.positional_encoding, PositionalEncoding)  # Assuming PositionalEncoding class is implemented elsewhere
+    assert isinstance(model.positional_encoding,
+                      PositionalEncoding)  # Assuming PositionalEncoding class is implemented elsewhere
     assert len(model.encoder_layers) == num_layers
     assert len(model.decoder_layers) == num_layers
     assert isinstance(model.fc, nn.Linear)
@@ -35,6 +37,7 @@ def test_causal_transformer_initialization():
     # Check that the layers in the model are of the expected types
     assert isinstance(model.encoder_layers[0], EncoderLayer)
     assert isinstance(model.decoder_layers[0], DecoderLayer)
+
 
 # Test Case 2: Verify mask generation
 def test_generate_mask():
@@ -56,7 +59,8 @@ def test_generate_mask():
     mask = model.generate_mask(tgt)
 
     # Check the shape of the mask
-    assert mask.shape == (1, tgt_seq_length, tgt_seq_length), f"Expected mask shape (1, {tgt_seq_length}, {tgt_seq_length}), but got {mask.shape}"
+    assert mask.shape == (1, tgt_seq_length,
+                          tgt_seq_length), f"Expected mask shape (1, {tgt_seq_length}, {tgt_seq_length}), but got {mask.shape}"
 
     # Convert to numpy for inspection
     mask_data = mask.squeeze(0).cpu().numpy()
@@ -68,6 +72,7 @@ def test_generate_mask():
                 assert mask_data[i, j] == 0, f"Mask at ({i}, {j}) should be 0"
             else:
                 assert mask_data[i, j] == 1, f"Mask at ({i}, {j}) should be 1"
+
 
 # Test Case 3: Verify forward pass
 def test_forward_pass():
@@ -95,6 +100,7 @@ def test_forward_pass():
     # Check that the output has the expected shape
     assert output.shape == (batch_size, tgt_seq_length, 100)  # (batch_size, tgt_seq_len, vocab_size)
 
+
 # Test Case 4: Ensure model can handle different sequence lengths
 @pytest.mark.parametrize("seq_length", [5, 10, 50, 100])
 def test_variable_sequence_length(seq_length):
@@ -117,4 +123,3 @@ def test_variable_sequence_length(seq_length):
 
     # Check that the output shape is correct regardless of sequence length
     assert output.shape == (batch_size, seq_length, 100)  # (batch_size, tgt_seq_len, vocab_size)
-

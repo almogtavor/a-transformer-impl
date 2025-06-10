@@ -1,7 +1,7 @@
 import torch
-from torch import nn
 
-from src.encoder_layer import EncoderLayer  # Assuming this is the correct path to your EncoderLayer implementation
+from casual_transformer.encoder_layer import EncoderLayer  # Assuming this is the correct path to your EncoderLayer implementation
+
 
 def test_encoder_layer_shapes():
     batch_size = 2

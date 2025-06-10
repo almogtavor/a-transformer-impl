@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from src.positional_encoding import PositionalEncoding
+from casual_transformer.positional_encoding import PositionalEncoding
 
 
 def test_positional_enccoding_shapes():

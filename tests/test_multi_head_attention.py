@@ -1,10 +1,6 @@
 import torch
-import torch.nn as nn
-import torch.optim as optim
-import torch.utils.data as data
-import math
 
-from src.multi_head_attention import MultiHeadAttention
+from casual_transformer.multi_head_attention import MultiHeadAttention
 
 
 def test_multi_head_attention():

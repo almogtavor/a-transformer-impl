@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from src.position_wise_feed_forward_nn import PositionWiseFeedForward
+from casual_transformer.position_wise_feed_forward_nn import PositionWiseFeedForward
 
 
 def test_positionwise_feedforward_shapes():
