@@ -72,18 +72,16 @@ if __name__ == '__main__':
     # note: models should moved to device defined on line 34.
     gpt_model = None
     if args.variant == 'vanilla':
-        # [part c] Make some model here
         gpt_model = model.GPT(mconf).to(device)
     elif args.variant == 'perceiver':
         # set mconf.perceiver, and mconf.bottleneck_dim parameters appropriately.
-        pass # [part g] Make some other model here
+        pass # Make some other model here
     else:
         raise ValueError("Unknown model variant")
 
     # Perform pretraining, finetuning, or evaluation
     if args.function == 'pretrain':
         assert args.writing_params_path is not None
-        # TODO [part f]:
         # - Given:
         #     1. A corpus specified in args.pretrain_corpus_path
         #     2. An output path args.writing_params_path for the model parameters
@@ -126,7 +124,6 @@ if __name__ == '__main__':
     elif args.function == 'finetune':
         assert args.writing_params_path is not None
         assert args.finetune_corpus_path is not None
-        # TODO [part c] [part f]:
         # - Given:
         #     1. A finetuning corpus specified in args.finetune_corpus_path
         #     2. A path args.reading_params_path containing pretrained model
@@ -138,7 +135,7 @@ if __name__ == '__main__':
         #     2. Finetune the model on this corpus
         #     3. Save the resulting model in args.writing_params_path
         # - Make sure to use the following hyperparameters:
-        #     [part d] Hyperparameters for finetuning WITHOUT a pretrained model:
+        #     Hyperparameters for finetuning WITHOUT a pretrained model:
         #         max_epochs=75
         #         batch_size=256
         #         learning_rate=args.finetune_lr
@@ -147,7 +144,7 @@ if __name__ == '__main__':
         #         final_tokens=200*len(pretrain_dataset)*block_size
         #         num_workers=4
         #         writer=writer
-        #     [part f] Hyperparameters for finetuning WITH a pretrained model:
+        #     Hyperparameters for finetuning WITH a pretrained model:
         #         max_epochs=10
         #         batch_size=256
         #         learning_rate=args.finetune_lr
@@ -171,10 +168,10 @@ if __name__ == '__main__':
         name_dataset = dataset.NameDataset(pretrain_dataset, train_data)
         # Choose hyperparameters depending on whether we loaded a checkpoint or not:
         if args.reading_params_path is None:
-            # [part d] Hyperparameters for finetuning WITHOUT a pretrained model:
+            # Hyperparameters for finetuning WITHOUT a pretrained model:
             ft_max_epochs = 75
         else:
-            # [part f] Hyperparameters for finetuning WITH a pretrained model:
+            # Hyperparameters for finetuning WITH a pretrained model:
             ft_max_epochs = 10
         ft_batch_size = 256
         ft_learning_rate = args.finetune_lr

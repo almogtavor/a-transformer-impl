@@ -47,8 +47,6 @@ class NameDataset(Dataset):
 
 
 """
-[part e]
-
 Write a class that yields examples of a simplified span corruption objective.
 Do not change the signature of the __init__ or __getitem__ functions.
 
